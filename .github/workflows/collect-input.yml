@@ -1,0 +1,56 @@
+name: Collect Input
+
+on:
+  schedule:
+    - cron: "1 5 1-26 12 *"
+
+jobs:
+  create-files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure git
+        run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "Github Actions"
+
+      - name: Get date information
+        id: get_date
+        run: |
+          echo "day=$(date +%d)" >> $GITHUB_OUTPUT
+          echo "year=$(date +%Y)" >> $GITHUB_OUTPUT
+
+      - name: Turn off input collection after the event is over
+        if: ${{ steps.get_date.outputs.day == '26' }}
+        uses: mikefarah/yq@v4
+        with:
+          cmd: yq -i '.on = "workflow_dispatch"' '.github/workflows/collect-input.yml'
+
+      - name: Download input
+        id: download_input
+        if: ${{ env.SESSION != '' }}
+        run: |
+          url_day=$(echo $day | sed 's/^0*//')
+          curl --cookie "session=${SESSION}" \
+            -o inputs/${day}.txt \
+            "https://adventofcode.com/${year}/day/${url_day}/input"
+          truncate -s -1 inputs/${day}.txt
+        env:
+          SESSION: ${{ secrets.AOC_SESSION_COOKIE }}
+          DAY: ${{ steps.get_date.outputs.day }}
+          YEAR: ${{ steps.get_date.outputs.year }}
+
+      - name: Commit workflow changes
+        if: ${{ steps.get_date.outputs.day == '26' && steps.download_input.conclusion == 'success' }}
+        run: |
+          git add .github/workflows/collect-input.yml
+          git commit -m "Turning off input collection"
+
+      - name: Commit and push puzzle inputs
+        if: ${{ steps.download_input.conclusion == 'success' }}
+        run: |
+          git add .
+          git commit -m "Adding today's puzzle input"
+          git push
