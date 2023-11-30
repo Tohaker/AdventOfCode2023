@@ -8,9 +8,9 @@ import (
 
 func TestFloorMovement(t *testing.T) {
 	testCases := []struct {
-		input string
+		input    string
 		expected int
-	} {
+	}{
 		{"(())", 0},
 		{"()()", 0},
 		{"(((", 3},
@@ -44,9 +44,9 @@ func TestPart1(t *testing.T) {
 
 func TestFirstBasement(t *testing.T) {
 	testCases := []struct {
-		input string
+		input    string
 		expected int
-	} {
+	}{
 		{")", 1},
 		{"()())", 5},
 	}

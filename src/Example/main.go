@@ -46,7 +46,7 @@ func FindFirstTimeInBasement(input string) int {
 			floor--
 		}
 
-		if (floor == -1) {
+		if floor == -1 {
 			return i + 1
 		}
 	}
@@ -63,7 +63,7 @@ func Part2(path string) int {
 
 	return FindFirstTimeInBasement(string(content))
 }
- 
+
 func main() {
 	absPath, _ := filepath.Abs("./src/Example/input.txt")
 
