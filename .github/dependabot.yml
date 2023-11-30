@@ -16,7 +16,7 @@ updates:
 
   - directory: /
     open-pull-requests-limit: 5
-    package-ecosystem: npm # Change to one of the values here https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#package-ecosystem
+    package-ecosystem: gomod # Change to one of the values here https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#package-ecosystem
     rebase-strategy: auto
     schedule:
       interval: "daily"
