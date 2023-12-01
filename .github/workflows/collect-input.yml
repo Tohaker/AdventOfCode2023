@@ -39,8 +39,8 @@ jobs:
           truncate -s -1 inputs/${day}.txt
         env:
           SESSION: ${{ secrets.AOC_SESSION_COOKIE }}
-          DAY: ${{ steps.get_date.outputs.day }}
-          YEAR: ${{ steps.get_date.outputs.year }}
+          day: ${{ steps.get_date.outputs.day }}
+          year: ${{ steps.get_date.outputs.year }}
 
       - name: Commit workflow changes
         if: ${{ steps.get_date.outputs.day == '26' && steps.download_input.conclusion == 'success' }}
