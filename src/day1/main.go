@@ -9,11 +9,8 @@ import (
 	"strings"
 )
 
-func ExtractNumber(input string) int {
-	re := regexp.MustCompile(`\d`)
-	numbers := re.FindAllString(input, -1)
-
-	strVal := numbers[0] + numbers[len(numbers)-1]
+func ConvertStringsToNumber(a string, b string) int {
+	strVal := a + b
 	intVal, err := strconv.Atoi(strVal)
 
 	if err != nil {
@@ -23,20 +20,53 @@ func ExtractNumber(input string) int {
 	return intVal
 }
 
-func ReplaceStringNumber(input string) string {
-	// TODO: Make this nicer
-	newString := input
-	newString = strings.ReplaceAll(newString, "one", "o1e")
-	newString = strings.ReplaceAll(newString, "two", "t2o")
-	newString = strings.ReplaceAll(newString, "three", "t3e")
-	newString = strings.ReplaceAll(newString, "four", "f4r")
-	newString = strings.ReplaceAll(newString, "five", "f5e")
-	newString = strings.ReplaceAll(newString, "six", "s6x")
-	newString = strings.ReplaceAll(newString, "seven", "s7n")
-	newString = strings.ReplaceAll(newString, "eight", "e8t")
-	newString = strings.ReplaceAll(newString, "nine", "n9e")
+func ExtractNumber(input string) int {
+	re := regexp.MustCompile(`\d`)
+	numbers := re.FindAllString(input, -1)
 
-	return newString
+	return ConvertStringsToNumber(numbers[0], numbers[len(numbers)-1])
+}
+
+var stringToNumberLookup = map[string]string{
+	"one":   "1",
+	"two":   "2",
+	"three": "3",
+	"four":  "4",
+	"five":  "5",
+	"six":   "6",
+	"seven": "7",
+	"eight": "8",
+	"nine":  "9",
+}
+
+func reverse(str string) (result string) {
+	for _, v := range str {
+		result = string(v) + result
+	}
+	return
+}
+
+func ExtractStringNumbers(input string) int {
+	forwardRE := regexp.MustCompile(`(one)|(two)|(three)|(four)|(five)|(six)|(seven)|(eight)|(nine)|\d`)
+	reverseRE := regexp.MustCompile(`(eno)|(owt)|(eerht)|(ruof)|(evif)|(xis)|(neves)|(thgie)|(enin)|\d`)
+
+	forwardMatch := (forwardRE.FindAllString(input, 1))[0]
+	reverseMatch := (reverseRE.FindAllString(reverse(input), 1))[0]
+
+	first, ok := stringToNumberLookup[forwardMatch]
+
+	if !ok {
+		first = forwardMatch
+	}
+
+	reversedReverseMatch := reverse(reverseMatch)
+	second, ok := stringToNumberLookup[reversedReverseMatch]
+
+	if !ok {
+		second = reversedReverseMatch
+	}
+
+	return ConvertStringsToNumber(first, second)
 }
 
 func Part1(input []string) int {
@@ -53,7 +83,7 @@ func Part2(input []string) int {
 	result := 0
 
 	for _, s := range input {
-		result += ExtractNumber(ReplaceStringNumber(s))
+		result += ExtractStringNumbers(s)
 	}
 
 	return result

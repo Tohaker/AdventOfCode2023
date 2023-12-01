@@ -30,25 +30,28 @@ func TestExtractNumber(t *testing.T) {
 	}
 }
 
-func TestReplaceStringNumber(t *testing.T) {
+func TestExtractStringNumber(t *testing.T) {
 	testCases := []struct {
 		input    string
-		expected string
+		expected int
 	}{
-		{"two1nine", "t2o1n9e"},
-		{"eightwothree", "e8t2ot3e"},
-		{"xtwone3four", "xt2o1e3f4r"},
-		{"4nineeightseven2", "4n9ee8ts7n2"},
-		{"zoneight234", "zo1e8t234"},
-		{"7pqrstsixteen", "7pqrsts6xteen"},
+		{"two1nine", 29},
+		{"eightwothree", 83},
+		{"xtwone3four", 24},
+		{"4nineeightseven2", 42},
+		{"zoneight234", 14},
+		{"7pqrstsixteen", 76},
+		{"eighthree", 83},
+		{"twone", 21},
+		{"sevenine", 79},
 	}
 
 	for _, tc := range testCases {
-		t.Run(fmt.Sprintf("%s returns %s", tc.input, tc.expected), func(t *testing.T) {
-			result := ReplaceStringNumber(tc.input)
+		t.Run(fmt.Sprintf("%s returns %d", tc.input, tc.expected), func(t *testing.T) {
+			result := ExtractStringNumbers(tc.input)
 
 			if result != tc.expected {
-				t.Fatalf("%s is not %s", result, tc.expected)
+				t.Fatalf("%d is not %d", result, tc.expected)
 			}
 		})
 	}
