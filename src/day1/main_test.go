@@ -106,7 +106,7 @@ func TestPart2Real(t *testing.T) {
 	content, _ := os.ReadFile(absPath)
 
 	result := Part2(strings.Split(string(content), "\n"))
-	expected := 53194
+	expected := 54249
 
 	if result != expected {
 		t.Fatalf("%d is not %d", result, expected)
