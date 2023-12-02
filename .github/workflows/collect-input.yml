@@ -34,7 +34,7 @@ jobs:
         run: |
           url_day=$(echo $day | sed 's/^0*//')
           curl --cookie "session=${SESSION}" \
-            -o inputs/${day}.txt \
+            -o inputs/day${url_day}.txt \
             "https://adventofcode.com/${year}/day/${url_day}/input"
           truncate -s -1 inputs/${day}.txt
         env:
