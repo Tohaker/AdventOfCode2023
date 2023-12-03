@@ -36,7 +36,7 @@ jobs:
           curl --cookie "session=${SESSION}" \
             -o inputs/day${url_day}.txt \
             "https://adventofcode.com/${year}/day/${url_day}/input"
-          truncate -s -1 inputs/${day}.txt
+          truncate -s -1 inputs/day${url_day}.txt
         env:
           SESSION: ${{ secrets.AOC_SESSION_COOKIE }}
           day: ${{ steps.get_date.outputs.day }}
