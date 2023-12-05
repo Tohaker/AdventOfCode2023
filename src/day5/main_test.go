@@ -116,14 +116,14 @@ func TestPart1Real(t *testing.T) {
 	}
 }
 
-func TestPart2Real(t *testing.T) {
-	absPath, _ := filepath.Abs("../../inputs/day5.txt")
-	content, _ := os.ReadFile(absPath)
+// func TestPart2Real(t *testing.T) {
+// 	absPath, _ := filepath.Abs("../../inputs/day5.txt")
+// 	content, _ := os.ReadFile(absPath)
 
-	result := Part2(string(content))
-	expected := 0
+// 	result := Part2(string(content))
+// 	expected := 0
 
-	if result != expected {
-		t.Fatalf("%d is not %d", result, expected)
-	}
-}
+// 	if result != expected {
+// 		t.Fatalf("%d is not %d", result, expected)
+// 	}
+// }

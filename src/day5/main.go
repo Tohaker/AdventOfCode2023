@@ -131,6 +131,8 @@ func Part2(input string) int {
 
 			if result < 0 || value < result {
 				result = value
+
+				fmt.Println(value)
 			}
 		}
 
