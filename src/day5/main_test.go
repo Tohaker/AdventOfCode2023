@@ -121,7 +121,7 @@ func TestPart1Real(t *testing.T) {
 // 	content, _ := os.ReadFile(absPath)
 
 // 	result := Part2(string(content))
-// 	expected := 0
+// 	expected := 81956384
 
 // 	if result != expected {
 // 		t.Fatalf("%d is not %d", result, expected)
