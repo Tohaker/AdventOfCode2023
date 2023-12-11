@@ -24,52 +24,71 @@ func IsEmptySpace(line []string) bool {
 	return true
 }
 
-func ExpandMap(input []string, multiplier int) [][]string {
-	expandedMapLines := make([][]string, 0)
+type ExpandedSpace struct {
+	mapLines [][]string
+	x        map[int]int
+	y        map[int]int
+}
 
-	for _, line := range input {
+// Mark which index has an empty line,
+// When it's time to list galaxy points,
+// check if those coords are after x number of empty lines
+// and increment them accordingly
+func GetExpandedSpace(input []string, multiplier int) ExpandedSpace {
+	mapLines := make([][]string, 0)
+	expandedSpaceX := make(map[int]int, 0)
+	expandedSpaceY := make(map[int]int, 0)
+
+	for i, line := range input {
 		splitLine := strings.Split(line, "")
-		expandedMapLines = append(expandedMapLines, splitLine)
+		mapLines = append(mapLines, splitLine)
 
 		if IsEmptySpace(splitLine) {
-			for k := 0; k < multiplier; k++ {
-				expandedMapLines = append(expandedMapLines, splitLine)
-			}
+			expandedSpaceY[i] = multiplier
 		}
 	}
 
-	expandedMap := make([][]string, len(expandedMapLines))
-	for i := range expandedMapLines {
-		expandedMap[i] = make([]string, 0)
-	}
+	for i := range mapLines[0] {
+		column := make([]string, len(mapLines))
 
-	for i := range expandedMapLines[0] {
-		column := make([]string, len(expandedMapLines))
-
-		for j := 0; j < len(expandedMapLines); j++ {
-			column[j] = expandedMapLines[j][i]
-			expandedMap[j] = append(expandedMap[j], column[j])
+		for j := 0; j < len(mapLines); j++ {
+			column[j] = mapLines[j][i]
 		}
 
 		if IsEmptySpace(column) {
-			for j := 0; j < len(expandedMapLines); j++ {
-				for k := 0; k < multiplier; k++ {
-					expandedMap[j] = append(expandedMap[j], ".")
-				}
-			}
+			expandedSpaceX[i] = multiplier
 		}
 	}
 
-	return expandedMap
+	return ExpandedSpace{
+		mapLines: mapLines,
+		x:        expandedSpaceX,
+		y:        expandedSpaceY,
+	}
 }
 
-func ListGalaxies(expandedMap [][]string) []Coordinate {
+func ListExpandedGalaxies(expandedSpace ExpandedSpace) []Coordinate {
 	coords := make([]Coordinate, 0)
 
-	for y, line := range expandedMap {
+	for y, line := range expandedSpace.mapLines {
 		for x, loc := range line {
 			if loc == "#" {
-				coords = append(coords, Coordinate{x, y})
+				newX := x
+				newY := y
+
+				for index, multiplier := range expandedSpace.x {
+					if index < x {
+						newX += multiplier
+					}
+				}
+
+				for index, multiplier := range expandedSpace.y {
+					if index < y {
+						newY += multiplier
+					}
+				}
+
+				coords = append(coords, Coordinate{newX, newY})
 			}
 		}
 	}
@@ -117,7 +136,7 @@ func FindUniquePairsAndDistances(galaxies []Coordinate) map[string]int {
 }
 
 func Part1(input []string) int {
-	pairs := FindUniquePairsAndDistances(ListGalaxies(ExpandMap(input, 1)))
+	pairs := FindUniquePairsAndDistances(ListExpandedGalaxies(GetExpandedSpace(input, 1)))
 	result := 0
 
 	for _, v := range pairs {
@@ -128,7 +147,7 @@ func Part1(input []string) int {
 }
 
 func Part2(input []string, expansionMultiplier int) int {
-	pairs := FindUniquePairsAndDistances(ListGalaxies(ExpandMap(input, expansionMultiplier-1)))
+	pairs := FindUniquePairsAndDistances(ListExpandedGalaxies(GetExpandedSpace(input, expansionMultiplier-1)))
 	result := 0
 
 	for _, v := range pairs {
