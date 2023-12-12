@@ -50,6 +50,15 @@ func TestPart1(t *testing.T) {
 	}
 }
 
+func TestPart2(t *testing.T) {
+	result := Part2(testUnsolvedInput)
+	expected := 525152
+
+	if result != expected {
+		t.Fatalf("%d does not match %d", result, expected)
+	}
+}
+
 func TestPart1Real(t *testing.T) {
 	absPath, _ := filepath.Abs("../../inputs/day12.txt")
 	content, _ := os.ReadFile(absPath)

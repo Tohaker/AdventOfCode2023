@@ -32,6 +32,20 @@ func ParseInput(input string) SpringsRecord {
 	}
 }
 
+func UnfoldSpring(record SpringsRecord) SpringsRecord {
+	newDamaged := strings.Repeat(record.damaged, 5)
+	newSprings := make([]int, 0)
+
+	for i := 0; i < 5; i++ {
+		newSprings = append(newSprings, record.springs...)
+	}
+
+	return SpringsRecord{
+		newSprings,
+		newDamaged,
+	}
+}
+
 func CreateRegexp(springs []int) regexp.Regexp {
 	regex := `^\.*`
 
@@ -98,6 +112,16 @@ func Part1(input []string) int {
 	return result
 }
 
+func Part2(input []string) int {
+	result := 0
+
+	for _, line := range input {
+		result += len(FindValidPermutations(UnfoldSpring(ParseInput(line))))
+	}
+
+	return result
+}
+
 func main() {
 	absPath, _ := filepath.Abs("../../inputs/day12.txt")
 	content, err := os.ReadFile(absPath)
@@ -109,5 +133,5 @@ func main() {
 	lines := strings.Split(string(content), "\n")
 
 	fmt.Printf("Part 1: %d\n", Part1(lines))
-	// fmt.Printf("Part 2: %d\n", Part2(lines))
+	fmt.Printf("Part 2: %d\n", Part2(lines))
 }
