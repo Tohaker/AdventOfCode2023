@@ -61,9 +61,38 @@ func TestFindReflection(t *testing.T) {
 	}
 }
 
+func TestFindSmudgedReflection(t *testing.T) {
+	testCases := []struct {
+		input    []string
+		expected int
+	}{
+		{testInput[:7], 3},
+		{testInput[8:], 1},
+	}
+
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("The reflection has value of %d", tc.expected), func(t *testing.T) {
+			result := FindSmudgedReflection(tc.input)
+
+			if result != tc.expected {
+				t.Fatalf("%d is not %d", result, tc.expected)
+			}
+		})
+	}
+}
+
 func TestPart1(t *testing.T) {
 	result := Part1(testInput)
 	expected := 405
+
+	if result != expected {
+		t.Fatalf("%d is not %d", result, expected)
+	}
+}
+
+func TestPart2(t *testing.T) {
+	result := Part2(testInput)
+	expected := 400
 
 	if result != expected {
 		t.Fatalf("%d is not %d", result, expected)
