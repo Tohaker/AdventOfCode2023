@@ -4,8 +4,29 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 )
+
+func RotateMirror(mirror []string) []string {
+	rotatedMirror := make([]string, 0)
+	newMirror := make([]string, len(mirror))
+	copy(newMirror, mirror)
+
+	slices.Reverse(newMirror)
+
+	for j := 0; j < len(newMirror[0]); j++ {
+		line := ""
+
+		for _, v := range newMirror {
+			line += string(v[j])
+		}
+
+		rotatedMirror = append(rotatedMirror, line)
+	}
+
+	return rotatedMirror
+}
 
 func FindReflection(mirror []string) int {
 	reflectionLine := 0
@@ -14,58 +35,27 @@ func FindReflection(mirror []string) int {
 	rowsAbove := make([]string, 0)
 
 	for i := 0; i < len(mirror)-1; i++ {
+		if reflectionLine > 0 {
+			break
+		}
+
 		rowsAbove = append(rowsAbove, mirror[i])
 
 		if mirror[i+1] == mirror[i] {
-			// Start checking reflection
-			for j := 0; j < len(rowsAbove); j++ {
-				if j+i+1 == len(mirror) {
-					break
-				}
+			// Check as far as the smallest value
+			smallestValue := len(rowsAbove)
 
+			if len(mirror[i:len(mirror)-1]) < len(rowsAbove) {
+				smallestValue = len(mirror[i : len(mirror)-1])
+			}
+
+			// Start checking reflection
+			for j := 0; j < smallestValue; j++ {
 				if mirror[j+i+1] != rowsAbove[len(rowsAbove)-j-1] {
 					reflectionLine = 0
 					break
 				}
-				reflectionLine = 100 * len(rowsAbove)
-			}
-		}
-	}
-
-	if reflectionLine > 0 {
-		return reflectionLine
-	}
-
-	// Find any vertical reflection next
-	colsLeft := make([]string, 0)
-
-	rotatedMirror := make([]string, 0)
-
-	for j := 0; j < len(mirror[0]); j++ {
-		line := ""
-
-		for _, v := range mirror {
-			line += string(v[j])
-		}
-
-		rotatedMirror = append(rotatedMirror, line)
-	}
-
-	for i := 0; i < len(rotatedMirror)-1; i++ {
-		colsLeft = append(colsLeft, rotatedMirror[i])
-
-		if rotatedMirror[i+1] == rotatedMirror[i] {
-			// Start checking reflection
-			for j := 0; j < len(colsLeft); j++ {
-				if j+i+1 == len(rotatedMirror) {
-					break
-				}
-
-				if rotatedMirror[j+i+1] != colsLeft[len(colsLeft)-j-1] {
-					reflectionLine = 0
-					break
-				}
-				reflectionLine = len(colsLeft)
+				reflectionLine = len(rowsAbove)
 			}
 		}
 	}
@@ -84,7 +74,8 @@ func Part1(input []string) int {
 		}
 
 		if v == "" || i == len(input)-1 {
-			result += FindReflection(currentMirror)
+			result += 100 * FindReflection(currentMirror)
+			result += FindReflection(RotateMirror(currentMirror))
 			currentMirror = make([]string, 0)
 		}
 	}
